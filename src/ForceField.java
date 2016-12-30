@@ -32,7 +32,11 @@ public class ForceField extends Application {
     	Scene theScene = new Scene( root );
     	theStage.setScene( theScene );
     	
-        Canvas canvas = new Canvas( 1080, 600 );
+    	int canvasWidth = 1080;
+    	int canvasHeight = 600;
+    		
+    	
+        Canvas canvas = new Canvas( canvasWidth, canvasHeight);
         root.getChildren().add( canvas );
         
         
@@ -61,12 +65,26 @@ public class ForceField extends Application {
             });
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        
+        Font theFont = Font.font( "Calibri", FontWeight.BOLD, 24 );
+        gc.setFont( theFont );
+        gc.setFill( Color.BLACK);
+        gc.setStroke( Color.BLACK );
+        gc.setLineWidth(1);
 
         // sprite initialization 
         int harambeVerticalPosition = 300;
+        Image ogHarambeLeft = new Image("file:graphics/sprites/harambeleft.png");
+        Image ogHarambeRight = new Image("file:graphics/sprites/haramberight.png");
+        
+        Double harambeWidth = ogHarambeLeft.getWidth() * 0.7;
+        Double harambeHeight = ogHarambeRight.getHeight() * 0.7;
+        
+        Image harambeLeft = new Image("file:graphics/sprites/harambeleft.png", harambeWidth, harambeHeight, false, false);
+        Image harambeRight = new Image("file:graphics/sprites/haramberight.png", harambeWidth, harambeHeight, false, false);
         
         Sprite harambe = new Sprite();
-        harambe.setImage("file:graphics/sprites/harambeleft.png");
+        harambe.setImage(harambeLeft);
         harambe.setPosition(400, harambeVerticalPosition);
         
         ArrayList<Sprite> moneybagList = new ArrayList<Sprite>();
@@ -74,7 +92,7 @@ public class ForceField extends Application {
         for (int i = 0; i < 15; i++)
         {
             Sprite moneybag = new Sprite();
-            moneybag.setImage("file:graphics/sprites/harambeleft.png");
+            moneybag.setImage("file:graphics/sprites/banana.png");
             double px = 350 * Math.random() + 50;
             double py = 350 * Math.random() + 50;          
             moneybag.setPosition(px,py);
@@ -100,17 +118,17 @@ public class ForceField extends Application {
                 harambe.setVelocity(0,0);
                 if (input.contains("LEFT")) {
                     harambe.addVelocity(-150,0);
-                    harambe.setImage("file:graphics/sprites/harambeleft.png");
+                    harambe.setImage(harambeLeft);
                 }
                     
                 if (input.contains("RIGHT")) {
                     harambe.addVelocity(150,0);
-                    harambe.setImage("file:graphics/sprites/haramberight.png");
+                    harambe.setImage(harambeRight);
                 }
                 
                 final double futurePos = harambe.xPos + harambe.velocityX * elapsedTime;
                 
-                if (!(0 > futurePos || futurePos > 805)) {
+                if (!(0 > futurePos || futurePos > (canvasWidth - harambeWidth))) {
                 harambe.update(elapsedTime);
                 }
                 
@@ -129,15 +147,18 @@ public class ForceField extends Application {
                 
                 // render
                 
-                gc.clearRect(0, 0, 1080, 600);
+                Image background = new Image("file:graphics/background.png", 1080, 600, false, false);
+                
+                //gc.clearRect(0, 0, 1080, 600);
+                gc.drawImage(background, 0, 0);
                 harambe.render( gc );
                 
                 for (Sprite moneybag : moneybagList )
                     moneybag.render( gc );
 
                 String pointsText = "Cash: $" + (100 * score.value);
-                gc.fillText( pointsText, 360, 36 );
-                gc.strokeText( pointsText, 360, 36 );
+                gc.fillText( pointsText, 925, 36 );
+                gc.strokeText( pointsText, 925, 36 );
             }
         }.start();
 
