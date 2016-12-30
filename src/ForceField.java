@@ -73,7 +73,7 @@ public class ForceField extends Application {
         gc.setLineWidth(1);
 
         // sprite initialization 
-        int harambeVerticalPosition = 300;
+        int harambeVerticalPosition = 350;
         Image ogHarambeLeft = new Image("file:graphics/sprites/harambeleft.png");
         Image ogHarambeRight = new Image("file:graphics/sprites/haramberight.png");
         
