@@ -4,13 +4,14 @@ import javafx.scene.image.Image;
 
 public class Sprite {
 
-    private Image image;
-    		double xPos;
-    private double yPos;    
-    		double velocityX;
-    private double velocityY;
-    private double width;
-    private double height;
+    Image image;
+    double xPos;
+    double yPos;    
+ 	double velocityX;
+    double velocityY;
+    int timer;
+ 	private double width;
+	private double height;
 
     
     public Sprite()
@@ -19,6 +20,8 @@ public class Sprite {
         yPos = 0;    
         velocityX = 0;
         velocityY = 0;
+        timer = 0;
+        
     }
 
     public void setImage(Image i)
