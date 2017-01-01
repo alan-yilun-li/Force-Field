@@ -41,7 +41,7 @@ public class ForceField extends Application {
            double px = potentialX;
            double py = Math.random() * -40 - banana.image.getHeight();
            banana.setPosition(px,py);
-           banana.setVelocity(0, Math.random() * 30 + 60);
+           banana.setVelocity(0, Math.random() * 60 + 90);
            return banana;
     }
     
@@ -133,11 +133,9 @@ public class ForceField extends Application {
                 lastNanoTime.value = currentNanoTime;
                 
                 
-                if (counter.value == 30) {
+                if (counter.value % 30 == 0) {
                 	score.value++;
-                	counter.value = 0;
                 }
-                else counter.value++;
                 
                 // Handling Game Logic Corresponding to Input
                 
@@ -159,9 +157,17 @@ public class ForceField extends Application {
                 }
                 
                 // Making New Bananas
-                if (bananaList.size() < Math.random() * 6 + 3) {
+                if (bananaList.size() < 5) {
                 		bananaList.add(makeBanana());
                 }
+                
+                if (counter.value == 60) {
+                	bananaList.add(makeBanana());
+                	counter.value = 0;
+                }
+
+                counter.value++;
+                
                 // Detecting Collisions
                 
                 Iterator<Sprite> bananaIter = bananaList.iterator();
