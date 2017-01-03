@@ -16,35 +16,47 @@ import java.util.Iterator;
 
 public class HarambeQuest extends Application {
 	
-	// Canvas Size
+	// Canvas Details
 	private int canvasWidth = 1080;
 	private int canvasHeight = 600;
-    
+
+    Image background = new Image("file:graphics/background.png",
+    		canvasWidth, canvasHeight, false, false);
 	
     public static void main(String[] args) 
     {
         launch(args);
     }
     
-    public Sprite makeBanana() {
-    	   Sprite banana = new Sprite();
-           banana.setImage("file:graphics/sprites/banana.png");
-           double bananaWidth = banana.image.getWidth();
-           
-           
-           double potentialX = canvasWidth * Math.random() - bananaWidth;
-           
-           while (potentialX < 0) {
-           	potentialX = canvasWidth * Math.random() - bananaWidth;
-           }
-           
-           double px = potentialX;
-           double py = Math.random() * -40 - banana.image.getHeight();
-           banana.setPosition(px,py);
-           banana.setVelocity(0, Math.random() * 60 + 90);
-           return banana;
+    public Sprite makeSprite(String spriteName) {
+    	Sprite s = new Sprite();
+    	
+    	if (spriteName == "banana") {
+    		s.setImage("file:graphics/sprites/banana.png");
+    	}
+    	
+    	else {
+    		double babyResizeFactor = 0.5;
+            Image ogBaby = new Image("file:graphics/sprites/baby.png");
+            Image resizedBaby = new Image("file:graphics/sprites/baby.png",
+            		ogBaby.getWidth() * babyResizeFactor, ogBaby.getHeight() * babyResizeFactor, false, false);
+    		s.setImage(resizedBaby);
+    	}
+
+        double spriteWidth = s.image.getWidth();
+        
+        double potentialX = canvasWidth * Math.random() - spriteWidth;
+        
+        while (potentialX < 0) {
+        	potentialX = canvasWidth * Math.random() - spriteWidth;
+        }
+        
+        double px = potentialX;
+        double py = Math.random() * -40 - s.image.getHeight();
+        s.setVelocity(0, Math.random() * 60 + 90);
+        s.setPosition(px,py);
+        return s;
     }
-    
     
     @Override
     public void start(Stage theStage) 
@@ -113,12 +125,11 @@ public class HarambeQuest extends Application {
         harambe.setPosition(canvasWidth/2 - harambeWidth/2, harambeVerticalPosition);
         
         ArrayList<Sprite> bananaList = new ArrayList<Sprite>();
+        ArrayList<Sprite> babyList = new ArrayList<Sprite>();
         
         for (int i = 0; i < 8; i++) {
-            bananaList.add( makeBanana() );
+            bananaList.add( makeSprite("banana") );
         }
-
-        System.out.println(System.getProperty("user.dir"));
         
         LongValue lastNanoTime = new LongValue( System.nanoTime() );
         IntValue score = new IntValue(0);
@@ -131,6 +142,7 @@ public class HarambeQuest extends Application {
                 // Calculating Time and Score Since Last Update
                 double elapsedTime = (currentNanoTime - lastNanoTime.value) / 1000000000.0;
                 lastNanoTime.value = currentNanoTime;
+                double timeInSeconds = currentNanoTime / 1000000000.0;
                 
                 
                 if (counter.value % 30 == 0) {
@@ -156,18 +168,22 @@ public class HarambeQuest extends Application {
                 harambe.update(elapsedTime);
                 }
                 
-                // Making New Bananas
+                // Making New Bananas and Babies
                 if (bananaList.size() < 6 + Math.random() * 3) {
-                		bananaList.add(makeBanana());
+                		bananaList.add(makeSprite("banana"));
                 }
                 
                 if (counter.value == 40) {
-                	bananaList.add(makeBanana());
+                	bananaList.add(makeSprite("banana"));
                 	counter.value = 0;
+                }
+                
+                if (babyList.size() < 6) {
+                	babyList.add(makeSprite("baby"));
                 }
 
                 counter.value++;
-                
+               
                 // Detecting Collisions
                 
                 Iterator<Sprite> bananaIter = bananaList.iterator();
@@ -181,14 +197,28 @@ public class HarambeQuest extends Application {
                     }
                 }
                 
-                // Rendering Graphics
+                // Game Over :( 
+                Iterator<Sprite> babyIter = babyList.iterator();
+                while ( babyIter.hasNext() )
+                {
+                    Sprite baby = babyIter.next();
+                    if ( harambe.intersects(baby) )
+                    {
+                        Image gameOver = new Image("file:graphics/ripharambe.jpg",
+                        		canvasWidth, canvasHeight, false, false);
+                        gc.drawImage(gameOver, 0, 0);
+                        String finalScore = "Your Final Score: " + score.value;
+                        gc.fillText( finalScore, 300, 200 );
+                        gc.strokeText( finalScore, 30, 50 );
+                        this.stop();
+                    }
+                }
                 
-                Image background = new Image("file:graphics/background.png",
-                		canvasWidth, canvasHeight, false, false);
+                // Rendering Graphics
                 
                 gc.drawImage(background, 0, 0);
                 harambe.render( gc );
-                
+               
                 for (Sprite banana : bananaList ) {
                 	if (banana.yPos + banana.image.getHeight() + 5 > 
                 	harambeVerticalPosition + harambeHeight) {
@@ -209,6 +239,12 @@ public class HarambeQuest extends Application {
                 	
                     banana.render( gc );
                 }
+                
+                for (Sprite baby : babyList) {
+                	baby.update(elapsedTime);
+                	baby.render( gc );
+                }
+                
 
                 String pointsText = "Score: " + score.value;
                 gc.fillText( pointsText, 20, 40 );
@@ -217,7 +253,6 @@ public class HarambeQuest extends Application {
         }.start();
 
         theStage.show();
-  
     }
 	
 }
