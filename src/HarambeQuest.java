@@ -14,7 +14,7 @@ import javafx.scene.input.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ForceField extends Application {
+public class HarambeQuest extends Application {
 	
 	// Canvas Size
 	private int canvasWidth = 1080;
@@ -157,11 +157,11 @@ public class ForceField extends Application {
                 }
                 
                 // Making New Bananas
-                if (bananaList.size() < 5) {
+                if (bananaList.size() < 6 + Math.random() * 3) {
                 		bananaList.add(makeBanana());
                 }
                 
-                if (counter.value == 60) {
+                if (counter.value == 40) {
                 	bananaList.add(makeBanana());
                 	counter.value = 0;
                 }
@@ -190,8 +190,8 @@ public class ForceField extends Application {
                 harambe.render( gc );
                 
                 for (Sprite banana : bananaList ) {
-                	if (5 > (Math.abs(banana.yPos - harambeVerticalPosition
-                			- harambeHeight + banana.image.getHeight()))) {
+                	if (banana.yPos + banana.image.getHeight() + 5 > 
+                	harambeVerticalPosition + harambeHeight) {
                 		banana.timer++;
                 		if (banana.timer == 50) {
                 			banana.setImage("file:graphics/sprites/badbanana.png");
