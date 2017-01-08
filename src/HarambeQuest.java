@@ -36,7 +36,7 @@ public class HarambeQuest extends Application {
     	}
     	
     	else {
-    		double babyResizeFactor = 0.5;
+    		double babyResizeFactor = 0.25;
             Image ogBaby = new Image("file:graphics/sprites/baby.png");
             Image resizedBaby = new Image("file:graphics/sprites/baby.png",
             		ogBaby.getWidth() * babyResizeFactor, ogBaby.getHeight() * babyResizeFactor, false, false);
@@ -152,13 +152,16 @@ public class HarambeQuest extends Application {
                 // Handling Game Logic Corresponding to Input
                 
                 harambe.setVelocity(0,0);
+                
+                int harambeVelocity = 300;
+                
                 if (input.contains("LEFT")) {
-                    harambe.addVelocity(-150,0);
+                    harambe.addVelocity(-harambeVelocity,0);
                     harambe.setImage(harambeLeft);
                 }
                     
                 if (input.contains("RIGHT")) {
-                    harambe.addVelocity(150,0);
+                    harambe.addVelocity(harambeVelocity,0);
                     harambe.setImage(harambeRight);
                 }
                 
@@ -241,8 +244,14 @@ public class HarambeQuest extends Application {
                 }
                 
                 for (Sprite baby : babyList) {
+                	if (baby.yPos > canvasHeight) {
+                		babyList.remove(babyList.indexOf(baby));
+                	}
+                	
+                	
                 	baby.update(elapsedTime);
                 	baby.render( gc );
+                	
                 }
                 
 
