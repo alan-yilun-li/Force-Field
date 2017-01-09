@@ -36,7 +36,7 @@ public class HarambeQuest extends Application {
     	}
     	
     	else {
-    		double babyResizeFactor = 0.25;
+    		double babyResizeFactor = 0.40;
             Image ogBaby = new Image("file:graphics/sprites/baby.png");
             Image resizedBaby = new Image("file:graphics/sprites/baby.png",
             		ogBaby.getWidth() * babyResizeFactor, ogBaby.getHeight() * babyResizeFactor, false, false);
@@ -63,7 +63,7 @@ public class HarambeQuest extends Application {
     {
     	
     	// Setting the Stage
-    	theStage.setTitle( "Harambe Simulator" );
+    	theStage.setTitle( "HarambeQuest" );
     
     	Group root = new Group();
     	Scene theScene = new Scene( root );
@@ -139,16 +139,12 @@ public class HarambeQuest extends Application {
         {
             public void handle(long currentNanoTime)
             {
-                // Calculating Time and Score Since Last Update
+                // Calculating Time Since Last Update
                 double elapsedTime = (currentNanoTime - lastNanoTime.value) / 1000000000.0;
                 lastNanoTime.value = currentNanoTime;
-                double timeInSeconds = currentNanoTime / 1000000000.0;
+                //double timeInSeconds = currentNanoTime / 1000000000.0;
                 
-                
-                if (counter.value % 30 == 0) {
-                	score.value++;
-                }
-                
+
                 // Handling Game Logic Corresponding to Input
                 
                 harambe.setVelocity(0,0);
@@ -168,23 +164,31 @@ public class HarambeQuest extends Application {
                 final double futurePos = harambe.xPos + harambe.velocityX * elapsedTime;
                 
                 if (!(0 > futurePos || futurePos > (canvasWidth - harambeWidth))) {
-                harambe.update(elapsedTime);
+                	harambe.update(elapsedTime);
                 }
                 
-                // Making New Bananas and Babies
-                if (bananaList.size() < 6 + Math.random() * 3) {
-                		bananaList.add(makeSprite("banana"));
-                }
+                // Making New Bananas and Babies and Adding to Score
                 
-                if (counter.value == 40) {
+                // Minimum banana and baby counts
+                
+                /*if (bananaList.size() < 6 + Math.random() * 3) {
                 	bananaList.add(makeSprite("banana"));
-                	counter.value = 0;
-                }
-                
+                }       
+
                 if (babyList.size() < 6) {
                 	babyList.add(makeSprite("baby"));
+                }   */
+                
+                if (counter.value % 30 == 0) {
+                	babyList.add(makeSprite("baby"));
                 }
-
+                
+                if (counter.value % 40 == 0) {
+                	bananaList.add(makeSprite("banana"));
+                	score.value+= 10;
+                	counter.value = 0;
+                }
+    
                 counter.value++;
                
                 // Detecting Collisions
@@ -207,13 +211,14 @@ public class HarambeQuest extends Application {
                     Sprite baby = babyIter.next();
                     if ( harambe.intersects(baby) )
                     {
+                        this.stop();
                         Image gameOver = new Image("file:graphics/ripharambe.jpg",
                         		canvasWidth, canvasHeight, false, false);
                         gc.drawImage(gameOver, 0, 0);
                         String finalScore = "Your Final Score: " + score.value;
                         gc.fillText( finalScore, 300, 200 );
                         gc.strokeText( finalScore, 30, 50 );
-                        this.stop();
+                        System.out.println("it works!");
                     }
                 }
                 
