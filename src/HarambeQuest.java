@@ -43,7 +43,7 @@ public class HarambeQuest extends Application {
     		s.setImage(resizedBaby);
     	}
 
-        double spriteWidth = s.image.getWidth();
+        double spriteWidth = s.getImage().getWidth();
         
         double potentialX = canvasWidth * Math.random() - spriteWidth;
         
@@ -52,7 +52,7 @@ public class HarambeQuest extends Application {
         }
         
         double px = potentialX;
-        double py = Math.random() * -40 - s.image.getHeight();
+        double py = Math.random() * -40 - s.getImage().getHeight();
         s.setVelocity(0, Math.random() * 60 + 90);
         s.setPosition(px,py);
         return s;
@@ -161,7 +161,7 @@ public class HarambeQuest extends Application {
                     harambe.setImage(harambeRight);
                 }
                 
-                final double futurePos = harambe.xPos + harambe.velocityX * elapsedTime;
+                final double futurePos = harambe.getxPos() + harambe.getVelocityX() * elapsedTime;
                 
                 if (!(0 > futurePos || futurePos > (canvasWidth - harambeWidth))) {
                 	harambe.update(elapsedTime);
@@ -228,17 +228,17 @@ public class HarambeQuest extends Application {
                 harambe.render( gc );
                
                 for (Sprite banana : bananaList ) {
-                	if (banana.yPos + banana.image.getHeight() + 5 > 
+                	if (banana.getyPos() + banana.getImage().getHeight() + 5 > 
                 	harambeVerticalPosition + harambeHeight) {
-                		banana.timer++;
-                		if (banana.timer == 50) {
+                		banana.setTimer(banana.getTimer());
+                		if (banana.getTimer() == 50) {
                 			banana.setImage("file:graphics/sprites/badbanana.png");
                 		}
-                		if (banana.timer == 80) {
+                		if (banana.getTimer() == 80) {
 
                 			banana.setImage("file:graphics/sprites/realbadbanana.png");
                 		}
-                	 	if (banana.timer == 100) {
+                	 	if (banana.getTimer() == 100) {
                     		bananaList.remove(bananaList.indexOf(banana));
                     	} 
                 	}
@@ -249,7 +249,7 @@ public class HarambeQuest extends Application {
                 }
                 
                 for (Sprite baby : babyList) {
-                	if (baby.yPos > canvasHeight) {
+                	if (baby.getyPos() > canvasHeight) {
                 		babyList.remove(babyList.indexOf(baby));
                 	}
                 	
