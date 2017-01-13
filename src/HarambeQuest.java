@@ -230,7 +230,7 @@ public class HarambeQuest extends Application {
                 for (Sprite banana : bananaList ) {
                 	if (banana.getyPos() + banana.getImage().getHeight() + 5 > 
                 	harambeVerticalPosition + harambeHeight) {
-                		banana.setTimer(banana.getTimer());
+                		banana.setTimer(banana.getTimer() + 1);
                 		if (banana.getTimer() == 50) {
                 			banana.setImage("file:graphics/sprites/badbanana.png");
                 		}
@@ -241,6 +241,7 @@ public class HarambeQuest extends Application {
                 	 	if (banana.getTimer() == 100) {
                     		bananaList.remove(bananaList.indexOf(banana));
                     	} 
+                	 
                 	}
  
                 	else banana.update(elapsedTime);
